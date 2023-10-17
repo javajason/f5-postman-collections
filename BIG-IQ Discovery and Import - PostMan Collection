@@ -1,0 +1,593 @@
+{
+	"info": {
+		"_postman_id": "427e76ec-acea-4495-b6ef-7cbcde27b88c",
+		"name": "BIG-IQ REST Calls",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "JE - MachineId Resolver",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*\r",
+							"pm.environment.unset(\"BIGIQ_AS3_DEPLOY_APP_PRIMARY_TASK\");\r",
+							"var bigiqMgmtIp = pm.environment.get(\"BIGIQ_MGMT_IP\");\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var selfLink = jsonData.selfLink;\r",
+							"selfLink = selfLink.replace(\"localhost\",bigiqMgmtIp);\r",
+							"pm.environment.set(\"BIGIQ_AS3_DEPLOY_APP_PRIMARY_TASK\", selfLink);\r",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/system/machineid-resolver?$filter=('address'+eq+'10.1.1.4')\n",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"system",
+						"machineid-resolver"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "('address'+eq+'10.1.1.4')\n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JE - Device Trust",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var restid = jsonData.id;\r",
+							"pm.environment.set(\"REST_ID\", restid);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"address\": \"10.1.1.4\",\r\n    // \"clusterName\": \"Cluster-124-125\",\r\n    \"userName\": \"{{BIGIP_ADMIN_USERNAME}}\",\r\n    \"password\": \"{{BIGIP_ADMIN_PASSWORD}}\",\r\n    \"useBigiqSync\": false\r\n}"
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/global/tasks/device-trust",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"global",
+						"tasks",
+						"device-trust"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JE - Status of Device Trust",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/global/tasks/device-trust/{{REST_ID}}?$select=id,address,status,currentStep,errorType,errorMessage",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"global",
+						"tasks",
+						"device-trust",
+						"{{REST_ID}}"
+					],
+					"query": [
+						{
+							"key": "$select",
+							"value": "id,address,status,currentStep,errorType,errorMessage"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JE - MachineId Resolver - rerun",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var machine_id = jsonData.items[0].machineId;\r",
+							"pm.environment.set(\"MACHINE_ID\", machine_id);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/system/machineid-resolver?$filter=('address'+eq+'10.1.1.4')\n",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"system",
+						"machineid-resolver"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "('address'+eq+'10.1.1.4')\n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JE - Discover LTM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.unset(\"REST_ID\");\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var restid = jsonData.id;\r",
+							"pm.environment.set(\"REST_ID\", restid);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deviceReference\": {\r\n        // \"link\": \"https://localhost/mgmt/cm/system/machineid-resolver/{{REST_ID}}\"\r\n        // \"link\": \"https://localhost/mgmt/cm/system/machineid-resolver/e029e43c-eee1-4ae3-8458-af801e415ee6\"\r\n        \"link\": \"https://localhost/mgmt/cm/system/machineid-resolver/{{MACHINE_ID}}\"\r\n    },\r\n    \"moduleList\": [\r\n        {\r\n            \"module\": \"adc_core\"\r\n        }\r\n    ],\r\n    \"status\": \"STARTED\"\r\n}"
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/global/tasks/device-discovery",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"global",
+						"tasks",
+						"device-discovery"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JE - Status of Discover LTM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/global/tasks/device-discovery/{{REST_ID}}",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"global",
+						"tasks",
+						"device-discovery",
+						"{{REST_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "old JE - Status of Discover LTM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/global/tasks/device-discovery?$filter=deviceReference/link+eq+'{{REST_ID}}'",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"global",
+						"tasks",
+						"device-discovery"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "deviceReference/link+eq+'{{REST_ID}}'"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "old JE - Status of Discover LTM Copy - hardcode ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/global/tasks/device-discovery/e029e43c-eee1-4ae3-8458-af801e415ee6",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"global",
+						"tasks",
+						"device-discovery",
+						"e029e43c-eee1-4ae3-8458-af801e415ee6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JE - Import LTM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var restid = jsonData.id;\r",
+							"pm.environment.set(\"REST_ID\", restid);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deviceReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/system/machineid-resolver/{{REST_ID}}\"\r\n    },\r\n    \"conflictPolicy\": \"USE_BIGIQ\",\r\n    \"versionedConflictPolicy\": \"KEEP_VERSION\",\r\n    \"deviceConflictPolicy\": \"USE_BIGIP\",\r\n    \"moduleList\": [\r\n        {\r\n            \"module\": \"adc_core\"\r\n        }\r\n    ],\r\n    \"status\": \"STARTED\"\r\n}"
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/cm/global/tasks/device-import",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"cm",
+						"global",
+						"tasks",
+						"device-import"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JE - Status of Import LTM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*\r",
+							"pm.environment.unset(\"BIGIQ_AS3_DEPLOY_APP_PRIMARY_TASK\");\r",
+							"var bigiqMgmtIp = pm.environment.get(\"BIGIQ_MGMT_IP\");\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var selfLink = jsonData.selfLink;\r",
+							"selfLink = selfLink.replace(\"localhost\",bigiqMgmtIp);\r",
+							"pm.environment.set(\"BIGIQ_AS3_DEPLOY_APP_PRIMARY_TASK\", selfLink);\r",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{BIGIQ_MGMT_IP}}/mgmt/shared/resolver/device-groups/cm-adccore-allbigipDevices/devices/{{MACHINE_ID}}?$select=address,properties,state,version,machineId\n",
+					"protocol": "https",
+					"host": [
+						"{{BIGIQ_MGMT_IP}}"
+					],
+					"path": [
+						"mgmt",
+						"shared",
+						"resolver",
+						"device-groups",
+						"cm-adccore-allbigipDevices",
+						"devices",
+						"{{MACHINE_ID}}"
+					],
+					"query": [
+						{
+							"key": "$select",
+							"value": "address,properties,state,version,machineId\n"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{X-F5-Auth-Token}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-F5-Auth-Token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"var BIGIQ_MGMT_IP = pm.environment.get(\"BIGIQ_MGMT_IP\");",
+					"var BIGIQ_ADMIN_USERNAME = pm.environment.get(\"BIGIQ_ADMIN_USERNAME\");",
+					"var BIGIQ_ADMIN_PASSWORD = pm.environment.get(\"BIGIQ_ADMIN_PASSWORD\");",
+					"var credentials = {};",
+					"credentials.username = BIGIQ_ADMIN_USERNAME;",
+					"credentials.password = BIGIQ_ADMIN_PASSWORD;",
+					"credentials.provider = 'tmos';",
+					"const authTokenRequest = {",
+					"  url: 'https://'.concat(BIGIQ_MGMT_IP,'/mgmt/shared/authn/login'),",
+					"  method: 'POST',",
+					"  header: 'Content-Type:application/json',",
+					"  body: {",
+					"    mode: 'application/json',",
+					"    raw: JSON.stringify(credentials)",
+					"  }",
+					"};",
+					"",
+					"var getToken = true;",
+					"",
+					"if (!pm.environment.get('F5-Auth-Token-Expiry') || ",
+					"    !pm.environment.get('X-F5-Auth-Token')) {",
+					"    console.log('Token or expiry date are missing');",
+					"} else if (pm.environment.get('F5-Auth-Token-Expiry') <= (new Date()).getTime()) {",
+					"    console.log('Token is expired');",
+					"} else {",
+					"    getToken = false;",
+					"    console.log('Token and expiry date are all good');",
+					"}",
+					"",
+					"if (getToken === true) {",
+					"    pm.sendRequest(authTokenRequest, function (err, res) {",
+					"    console.log(err ? err : res.json());",
+					"        if (err === null) {",
+					"            var responseJson = res.json();",
+					"            pm.environment.set('X-F5-Auth-Token', responseJson.token.token);",
+					"            var expiryDate = new Date();",
+					"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.token.timeout);",
+					"            pm.environment.set('F5-Auth-Token-Expiry', expiryDate.getTime());",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
